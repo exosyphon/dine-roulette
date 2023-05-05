@@ -1,21 +1,29 @@
 import { useEffect, useState, useMemo } from 'react';
 
 export default function Home() {
-  const foods = ['Mexican', 'Italian', 'Greek', 'American', 'Thai', 'French', 'Chinese', 'Indian'];
-  const styles = ['Tacos', 'Burgers', 'Pizza', 'Steak', 'Seafood', 'Fries', 'BBQ', 'Casserole', 'Pasta'];
+  const foods: string[] = ['Mexican', 'Italian', 'Greek', 'American', 'Thai', 'French']; //, 'Chinese', 'Indian'];
+  const styles: string[] = ['Tacos', 'Burgers', 'Pizza', 'Steak', 'Seafood', 'Fries', 'BBQ', 'Casserole', 'Pasta'];
+  const sides: string[] = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+  const customTextCss: string[] = ['', 'invert-text', '', '', '', 'rotated-text'];
 
-  const [food, setFood] = useState('');
-  const [style, setStyle] = useState('');
+  const [rolling, setRolling] = useState<boolean>(false);
+  const [food, setFood] = useState<string>('');
+  const [style, setStyle] = useState<string>('');
+  const [diceOneSide, setDiceOneSide] = useState<number>(0);
+  const [diceTwoSide, setDiceTwoSide] = useState<number>(0);
 
   const roll = () => {
-    setFood(foods[Math.floor(Math.random() * foods.length)]);
-    setStyle(styles[Math.floor(Math.random() * style.length)]);
-  };
+    setRolling(true);
 
-  useEffect(() => {
-    setFood(foods[Math.floor(Math.random() * foods.length)]);
-    setStyle(styles[Math.floor(Math.random() * styles.length)]);
-  });
+    const diceOneSide = Math.floor(Math.random() * foods.length);
+    const diceTwoSide = Math.floor(Math.random() * foods.length);
+    setDiceOneSide(diceOneSide);
+    setDiceTwoSide(diceTwoSide);
+    setFood(foods[diceOneSide]);
+    setStyle(styles[diceTwoSide]);
+
+    setTimeout(() => setRolling(false), 1000);
+  };
 
   return (
     <>
@@ -28,6 +36,15 @@ export default function Home() {
           flexDirection: 'column',
         }}
       >
+        <div
+          className={'mb-8'}
+          style={{
+            fontSize: '44px',
+            fontWeight: 'bold',
+          }}
+        >
+          Dine Roulette!
+        </div>
         <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <button
             style={{ background: 'blue', height: '50px', width: '150px', color: 'white', marginBottom: '3rem' }}
@@ -37,11 +54,23 @@ export default function Home() {
           </button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div className="die">
-            <div className="face">{food}</div>
+          <div className={`dice ${rolling ? 'rolling' : ''} rolled-${sides[diceOneSide]}`}>
+            {foods?.map((item, index) => {
+              return (
+                <div key={index} className={`side ${sides[index]}`}>
+                  <div className={customTextCss[index]}>{item}</div>
+                </div>
+              );
+            })}
           </div>
-          <div className="die">
-            <div className="face">{style}</div>
+          <div className={`ml-5 dice ${rolling ? 'rolling' : ''} rolled-${sides[diceTwoSide]}`}>
+            {styles?.map((item, index) => {
+              return (
+                <div key={index} className={`side ${sides[index]}`}>
+                  <div className={customTextCss[index]}>{item}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
