@@ -25,6 +25,11 @@ export default function Home() {
     setTimeout(() => setRolling(false), 1000);
   };
 
+  function randomizeValue(max: number, min: number = 0): number {
+      const value = Math.floor(Math.random() * max);
+      return value < min ? randomizeValue(max, min) : value;
+  };
+
   return (
     <>
       <div
@@ -56,8 +61,12 @@ export default function Home() {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div className={`dice ${rolling ? 'rolling' : ''} rolled-${sides[diceOneSide]}`}>
             {foods?.map((item, index) => {
+              const h = randomizeValue(360);
+              const s = randomizeValue(95, 5);
+              const l = randomizeValue(80, 40);
               return (
-                <div key={index} className={`side ${sides[index]}`}>
+                <div key={index} className={`side ${sides[index]}`}
+                     style={{backgroundColor: `hsl(${h} ${s}% ${l}%)`, outline: `1px solid hsl(${h} ${s}% ${l - 10}%)`}}>
                   <div className={customTextCss[index]}>{item}</div>
                 </div>
               );
@@ -65,8 +74,12 @@ export default function Home() {
           </div>
           <div className={`ml-5 dice ${rolling ? 'rolling' : ''} rolled-${sides[diceTwoSide]}`}>
             {styles?.map((item, index) => {
+              const h = randomizeValue(360)
+              const s = randomizeValue(95, 5)
+              const l = randomizeValue(80, 40)
               return (
-                <div key={index} className={`side ${sides[index]}`}>
+                <div key={index} className={`side ${sides[index]}`} style={{backgroundColor: `hsl(${h} ${s}% ${l}%)`, outline: `1px solid hsl(${h} ${s}% ${l - 10}%)`}}>
+
                   <div className={customTextCss[index]}>{item}</div>
                 </div>
               );
