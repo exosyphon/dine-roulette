@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState } from 'react';
 
 export default function Home() {
   const foods: string[] = ['Mexican', 'Italian', 'Greek', 'American', 'Thai', 'French']; //, 'Chinese', 'Indian'];
