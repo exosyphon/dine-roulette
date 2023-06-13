@@ -36,3 +36,41 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Building Docker Image
+
+```sh
+docker build -t dine-roulette:development --target development .
+```
+
+```sh
+docker build -t dine-roulette:production --target production .
+```
+
+## Running containers manually
+
+### Development mode
+
+```sh
+docker run -it --rm --publish 3000:3000 --volume $(pwd):/app dine-roulette:development bash
+```
+
+### Production mode
+```sh
+docker run --rm --publish 3000:3000 dine-roulette:production
+```
+
+## Running with Docker Compose
+
+### Development mode
+
+```sh
+docker compose up
+```
+
+### Production mode
+
+```sh
+docker compose --file docker-compose.yml up
+```
+
