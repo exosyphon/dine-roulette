@@ -15,7 +15,7 @@ type Data = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const api = new ChatGPTAPI({
-    apiKey: process.env.CHAT_API_KEY,
+    apiKey: process.env.CHAT_API_KEY || '',
   });
 
   // const chatGptResponse = await api.sendMessage(
