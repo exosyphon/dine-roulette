@@ -24,5 +24,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // TODO: add error handling when bad response from ChatGPT
   // console.log(chatGptResponse);
   // res.status(200).json(JSON.parse(chatGptResponse.text));
-  res.status(200).json({restaurants: [{name: 'another place', address: '3965 Old Parker Rd, St Paul, TX 75098'}, {name: 'test place', address: '809 Woodbridge Pkwy Ste 400, Wylie, TX 75098'}]});
+  res.status(200).json({
+    restaurants: [
+      { name: 'another place', address: '3965 Old Parker Rd, St Paul, TX 75098' },
+      { name: 'test place', address: '809 Woodbridge Pkwy Ste 400, Wylie, TX 75098' },
+      { name: 'something new', address: '1008 W McDermott Dr, Allen, TX 75013' },
+    ],
+  });
 }

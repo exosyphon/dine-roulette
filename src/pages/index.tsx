@@ -6,7 +6,13 @@ export default function Home() {
   const styles: string[] = ['Tacos', 'Burgers', 'Pizza', 'Steak', 'Seafood', 'Fries', 'BBQ', 'Casserole', 'Pasta'];
   const sides: string[] = ['front', 'back', 'right', 'left', 'top', 'bottom'];
   const customTextCss: string[] = ['', 'invert-text', '', '', '', 'rotated-text'];
-  const markerColor = {0: 'red', 1: 'green'};
+  const markerColors: Map<number, string> = new Map([
+    [0, 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'],
+    [1, 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'],
+    [2, 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'],
+    [3, 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'],
+    [4, 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png'],
+  ]);
 
   const [infoWindow, setInfoWindow] = useState<string>('');
   const [userLocation, setUserLocation] = useState<number>(null);
@@ -22,13 +28,13 @@ export default function Home() {
   const center = useMemo(() => ({ lat: 32.83339, lng: -96.79391 }), []);
 
   const getGeocode = async function (restaurant: Restaurant): Promise<Restaurant> {
-    const address = restaurant.address.replace(' ', '+')
+    const address = restaurant.address.replace(' ', '+');
     return fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.results)
+        console.log(data.results);
         const location = data.results[0].geometry.location;
         restaurant.latitude = location.lat;
         restaurant.longitude = location.lng;
@@ -37,8 +43,8 @@ export default function Home() {
   };
 
   const handleMarkerClick = async (address: string) => {
-    setInfoWindow(address)
     setIsOpen(true);
+    setInfoWindow(address);
   };
 
   type Restaurant = {
@@ -50,7 +56,7 @@ export default function Home() {
 
   type RestaurantData = {
     restaurants: Restaurant[];
-  }
+  };
 
   const fetchFoodResults = async (food: string, style: string): Promise<void> => {
     return fetch('/api/chatgpt', {
@@ -128,7 +134,13 @@ export default function Home() {
           {!userLocation && <div>Please allow User Location!</div>}
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <button
-              style={{ background: !!userLocation ? 'blue' : 'grey', height: '50px', width: '150px', color: 'white', marginBottom: '3rem' }}
+              style={{
+                background: !!userLocation ? 'blue' : 'grey',
+                height: '50px',
+                width: '150px',
+                color: 'white',
+                marginBottom: '3rem',
+              }}
               onClick={roll}
               disabled={!!userLocation ? '' : 'disabled'}
             >
@@ -183,35 +195,37 @@ export default function Home() {
             width: '50%',
           }}
         >
-        {!isLoaded ? (
+          {!isLoaded ? (
             <h1>Loading...</h1>
-          ) : <>
-        {restaurants.length > 0 && restaurants.map((restaurant, index) => 
-                <GoogleMap key={index} mapContainerClassName="map-container" center={center} zoom={10}>
-                <MarkerF
-                position={{ lat: restaurant.latitude, lng: restaurant.longitude }}
-                onClick={() => {
-                handleMarkerClick(restaurant.address);
-                }}
-                icon={{
-                  url: index == 0 ? "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png" 
-                }}
-                >
-                {isOpen && (
+          ) : (
+            <>
+              <GoogleMap mapContainerClassName="map-container" center={center} zoom={10}>
+                {restaurants.length > 0 &&
+                  restaurants.map((restaurant: Restaurant, index: number) => (
+                    <MarkerF
+                      key={index}
+                      position={{ lat: restaurant.latitude, lng: restaurant.longitude }}
+                      onClick={() => {
+                        handleMarkerClick(restaurant.address);
+                      }}
+                      icon={{
+                        url: markerColors.get(index) ?? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                      }}
+                    >
+                      {isOpen && restaurant.address === infoWindow && (
                         <InfoWindowF
-                        onCloseClick={() => {
-                        setIsOpen(false);
-                        }}
+                          onCloseClick={() => {
+                            setIsOpen(false);
+                          }}
                         >
-                        <h1>{infoWindow}</h1>
+                          <h1>{infoWindow}</h1>
                         </InfoWindowF>
-                        )}
-                </MarkerF>
-                </GoogleMap>
-                )
-        }
-          </>
-          }
+                      )}
+                    </MarkerF>
+                  ))}
+              </GoogleMap>
+            </>
+          )}
         </div>
       </div>
     </>
