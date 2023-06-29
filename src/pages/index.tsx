@@ -14,6 +14,12 @@ export default function Home() {
     [4, 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png'],
   ]);
 
+  const [foodS, setFoodS] = useState<number>(0);
+  const [foodH, setFoodH] = useState<number>(0);
+  const [foodL, setFoodL] = useState<number>(0);
+  const [stylesS, setStylesS] = useState<number>(0);
+  const [stylesH, setStylesH] = useState<number>(0);
+  const [stylesL, setStylesL] = useState<number>(0);
   const [infoWindow, setInfoWindow] = useState<string>('');
   const [userLocation, setUserLocation] = useState<number>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -104,6 +110,12 @@ export default function Home() {
   };
 
   useEffect(() => {
+    setFoodH(randomizeValue(360));
+    setFoodS(randomizeValue(95, 5));
+    setFoodL(randomizeValue(80, 40));
+    setStylesH(randomizeValue(360));
+    setStylesS(randomizeValue(95, 5));
+    setStylesL(randomizeValue(80, 40));
     navigator.geolocation.getCurrentPosition(function (position) {
       getReverseGeocode(position.coords.latitude, position.coords.longitude);
     });
@@ -150,16 +162,13 @@ export default function Home() {
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <div className={`dice ${rolling ? 'rolling' : ''} rolled-${sides[diceOneSide]}`}>
               {foods?.map((item, index) => {
-                const h = randomizeValue(360);
-                const s = randomizeValue(95, 5);
-                const l = randomizeValue(80, 40);
                 return (
                   <div
                     key={index}
                     className={`side ${sides[index]}`}
                     style={{
-                      backgroundColor: `hsl(${h} ${s}% ${l}%)`,
-                      outline: `1px solid hsl(${h} ${s}% ${l - 10}%)`,
+                      backgroundColor: `hsl(${foodH} ${foodS}% ${foodL}%)`,
+                      outline: `1px solid hsl(${foodH} ${foodS}% ${foodL - 10}%)`,
                     }}
                   >
                     <div className={customTextCss[index]}>{item}</div>
@@ -169,16 +178,13 @@ export default function Home() {
             </div>
             <div className={`ml-5 dice ${rolling ? 'rolling' : ''} rolled-${sides[diceTwoSide]}`}>
               {styles?.map((item, index) => {
-                const h = randomizeValue(360);
-                const s = randomizeValue(95, 5);
-                const l = randomizeValue(80, 40);
                 return (
                   <div
                     key={index}
                     className={`side ${sides[index]}`}
                     style={{
-                      backgroundColor: `hsl(${h} ${s}% ${l}%)`,
-                      outline: `1px solid hsl(${h} ${s}% ${l - 10}%)`,
+                      backgroundColor: `hsl(${stylesH} ${stylesS}% ${stylesL}%)`,
+                      outline: `1px solid hsl(${stylesH} ${stylesS}% ${stylesL - 10}%)`,
                     }}
                   >
                     <div className={customTextCss[index]}>{item}</div>
@@ -218,7 +224,10 @@ export default function Home() {
                             setIsOpen(false);
                           }}
                         >
-                          <h1>{infoWindow}</h1>
+                          <div>
+                            <div style={{ fontWeight: 'bold' }}>{restaurant.name}</div>
+                            <div style={{ marginTop: '1rem' }}>{infoWindow}</div>
+                          </div>
                         </InfoWindowF>
                       )}
                     </MarkerF>
